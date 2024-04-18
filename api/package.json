@@ -1,0 +1,23 @@
+{
+  "name": "anakinirctctask",
+  "version": "1.0.0",
+  "description": "A scalable api design for a booking reservation system",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx tsc && nodemon ./build/app.js",
+    "start": "npx tsc && node ./build/app.js"
+  },
+  "author": "Yaswanth Kumar",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.12.7",
+    "typescript": "^5.4.5",
+    "nodemon": "^3.1.0"
+  }
+}

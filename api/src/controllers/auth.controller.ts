@@ -52,7 +52,7 @@ export const login = async (req:Request,res:Response)=>{
 
         // Generate Token
         const payload = user;
-        const token = jwt.sign(payload,"mysecret");
+        const token = jwt.sign(payload,"mysecret",{expiresIn: Math.floor(Date.now() / 1000) + (60 * 60)});
 
         return res.status(200).json({statusCode:200,data:{accessToken:token}});
 

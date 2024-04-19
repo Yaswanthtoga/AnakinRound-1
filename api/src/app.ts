@@ -3,6 +3,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import authRoute from './routes/auth.route';
+import reserveRoute from './routes/reservation.route'
 
 dotenv.config();
 process.on('uncaughtException',(error)=>{console.log(error)});
@@ -15,6 +16,7 @@ app.use(morgan("common"))
 app.use(express.json())
 
 // Routes
+app.use("/api/reservation",reserveRoute)
 app.use("/api/auth",authRoute)
 
 app.listen(process.env.PORT || 5000,()=>{

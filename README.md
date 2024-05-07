@@ -161,20 +161,3 @@ Note : Pass the data through query params
 
 Headers :
 Authorization : pass the jwt token
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -105,6 +105,7 @@ export const bookSeat = async (req:Request,res:Response)=>{
         return res.status(200).json({statusCode:200,data:{status:"Tickets Booked Succesfully",PNR:result?.[0]?.["PNR"]}});
 
     } catch (error) {
+        await db.rollback();
         return res.status(500).json({statusCode:500,data:error})
     }
 }

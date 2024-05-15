@@ -78,34 +78,37 @@ export const bookSeat = async (req:Request,res:Response)=>{
     const { trainNumber,numberOfSeats } = req?.body;
 
     if(!trainNumber && !numberOfSeats)return res.status(404).json({statusCode:404,data:"Please choose the train and number of seats"});
-
+    
     try {
-        var result;
+        let result;
         await db.transaction(async (tx)=>{
-            const seats = await tx
-              .select()
-              .from(schedule)
-              .where(eq(schedule.trainNumber,trainNumber))
-              .for('update')
+            try {
+                const seats = await tx
+                .select()
+                .from(schedule)
+                .where(eq(schedule.trainNumber,trainNumber))
+                .for('update')
 
-            const row = seats[0];
+                const row = seats[0];
 
-            if (row.availableSeats >= numberOfSeats) {
-                
-                await tx.update(schedule).set({
-                    availableSeats: row.availableSeats - numberOfSeats
-                }).where(eq(schedule.trainNumber, trainNumber));
-            } else {
-                return res.status(400).json({statusCode:400,data:'Not enough available seats'});
+                if (row.availableSeats >= numberOfSeats) {
+                    await tx.update(schedule).set({
+                        availableSeats: row.availableSeats - numberOfSeats
+                    }).where(eq(schedule.trainNumber, trainNumber));
+                } else {
+                    throw new Error("Not enough Available Seats")
+                }
+
+                // @ts-ignore
+                result = await db.insert(ticket).values({ PNR: uuidv4(), trainNumber,userId:req?.payload['id'], numberofSeats:numberOfSeats }).returning({PNR:ticket.PNR});
+            } catch (error) {
+                tx.rollback();
+                return res.status(400).json({statusCode:400,data:error})
             }
-
-            // @ts-ignore
-            result = await db.insert(ticket).values({ PNR: uuidv4(), trainNumber,userId:req?.payload['id'], numberofSeats:numberOfSeats }).returning({PNR:ticket.PNR});
         });
         return res.status(200).json({statusCode:200,data:{status:"Tickets Booked Succesfully",PNR:result?.[0]?.["PNR"]}});
 
     } catch (error) {
-        await tx.rollback();
         return res.status(500).json({statusCode:500,data:error})
     }
 }
